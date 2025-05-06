@@ -1,4 +1,3 @@
-// controllers/MessageController.js
 const crypto = require("crypto");
 const logger = require("../utils/logger");
 const messageRepository = require("../repositories/MessageRepository");

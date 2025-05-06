@@ -1,4 +1,3 @@
-// controllers/AuthController.js
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/UserRepository");

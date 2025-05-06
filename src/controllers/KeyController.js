@@ -1,4 +1,3 @@
-// controllers/KeyController.js
 const keyRepository = require("../repositories/KeyRepository");
 const logger = require("../utils/logger");
 

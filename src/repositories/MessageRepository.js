@@ -1,4 +1,3 @@
-// repositories/MessageRepository.js
 const Message = require("../models/Message");
 const User = require("../models/User");
 const mongoose = require("mongoose");

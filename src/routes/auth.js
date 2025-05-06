@@ -1,11 +1,9 @@
-// routes/authRoutes.js
 const express = require("express");
 const router = express.Router();
 const rateLimit = require("express-rate-limit");
 const { authenticate } = require("../middleware/auth");
 const authController = require("../controllers/AuthController");
 
-// Rate limiting configuration
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
