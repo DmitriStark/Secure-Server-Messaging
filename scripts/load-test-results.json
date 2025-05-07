@@ -1,18 +1,18 @@
 {
-  "startTime": 1746564374633,
-  "endTime": 0,
-  "totalConnections": 10000,
-  "maxConcurrentConnections": 10000,
-  "successfulPolls": 20,
+  "startTime": 1746577295642,
+  "endTime": 1746577298763,
+  "totalConnections": 0,
+  "maxConcurrentConnections": 0,
+  "successfulPolls": 0,
   "failedPolls": 0,
   "successfulMessages": 0,
   "failedMessages": 0,
-  "totalLatency": 4213340457,
-  "maxLatency": 6914,
+  "totalLatency": 0,
+  "maxLatency": 0,
   "serverErrors": 0,
   "clientErrors": 0,
-  "timeouts": 840692,
+  "timeouts": 0,
   "activeConnections": 0,
-  "avgLatency": 210667023,
-  "timestamp": "2025-05-06T20:56:22.025Z"
+  "avgLatency": 0,
+  "timestamp": "2025-05-07T00:21:38.763Z"
 }

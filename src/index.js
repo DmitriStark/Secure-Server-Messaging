@@ -114,10 +114,6 @@ if (cluster.isMaster) {
           (a, b) => a + b,
           0
         );
-
-        if (totalConnections % 1000 === 0) {
-          logger.info(`Total active connections: ${totalConnections}`);
-        }
       }
     });
   });

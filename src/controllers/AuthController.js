@@ -2,9 +2,8 @@ const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/UserRepository");
 const logger = require("../utils/logger");
+const { JWT_SECRET, JWT_EXPIRATION } = require('../config/auth.config');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRATION = "24h";
 
 class AuthController {
   async register(req, res) {
@@ -22,15 +21,10 @@ class AuthController {
         });
       }
 
-      if (
-        password.length < 8 ||
-        !password.match(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-        )
-      ) {
+      // Simplified password validation
+      if (password.length < 4) {
         return res.status(400).json({
-          message:
-            "Password must be at least 8 characters and include uppercase, lowercase, number and special character",
+          message: "Password must be at least 4 characters"
         });
       }
 

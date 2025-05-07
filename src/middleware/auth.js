@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const logger = require("../utils/logger");
-
-const JWT_SECRET = process.env.JWT_SECRET;
+const { JWT_SECRET } = require('../config/auth.config');
 
 const tokenBlacklist = new Map();
 
@@ -39,6 +38,7 @@ const verifyToken = (token) => {
       algorithms: ["HS256"],
     });
   } catch (err) {
+    logger.error("Token verification error:", err.message);
     throw err;
   }
 };
@@ -89,6 +89,8 @@ const authenticate = async (req, res, next) => {
 
   try {
     const authHeader = req.headers.authorization;
+    logger.debug(`Auth header: ${authHeader ? 'present' : 'missing'}`);
+    
     if (!authHeader) {
       return res
         .status(401)
@@ -96,36 +98,43 @@ const authenticate = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
+    
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
     }
 
-    const decoded = verifyToken(token);
-    if (!decoded || !decoded.username) {
-      return res.status(401).json({ message: "Invalid token" });
+    try {
+      const decoded = verifyToken(token);
+      
+      if (!decoded || !decoded.username) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const user = await getUser(decoded.username);
+
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      req.user = {
+        username: user.username,
+        publicKey: user.publicKey,
+      };
+
+      next();
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        return res.status(401).json({ message: "Token expired" });
+      } else if (error.message === "Token has been revoked") {
+        return res.status(401).json({ message: "Token has been revoked" });
+      } else {
+        logger.error("Authentication error:", error.message);
+        return res.status(401).json({ message: "Authentication failed" });
+      }
     }
-
-    const user = await getUser(decoded.username);
-
-    if (!user) {
-      return res.status(401).json({ message: "User not found" });
-    }
-
-    req.user = {
-      username: user.username,
-      publicKey: user.publicKey,
-    };
-
-    next();
   } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Token expired" });
-    } else if (error.message === "Token has been revoked") {
-      return res.status(401).json({ message: "Token has been revoked" });
-    } else {
-      logger.error("Authentication error:", error.message);
-      return res.status(401).json({ message: "Authentication failed" });
-    }
+    logger.error("Middleware error:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
