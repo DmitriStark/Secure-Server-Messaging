@@ -132,6 +132,22 @@ class MessageController {
         .json({ message: "Failed to retrieve message history" });
     }
   }
+  
+  async getAllMessages(req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 50;
+
+      const result = await messageRepository.getAllMessages(page, limit);
+      
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error("All messages retrieval error:", error);
+      return res
+        .status(500)
+        .json({ message: "Failed to retrieve all messages" });
+    }
+  }
 
   async markMessageAsRead(req, res) {
     try {
@@ -181,39 +197,6 @@ class MessageController {
     } catch (error) {
       logger.error("Status endpoint error:", error);
       return res.status(500).json({ message: "Error retrieving status" });
-    }
-  }
-
-  async getAllMessages(req, res) {
-    try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 50;
-
-      const messages = await Message.find({})
-        .select(
-          "_id sender encryptedContent iv recipientKeys recipients timestamp isUnread"
-        )
-        .sort({ timestamp: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean()
-        .exec();
-
-      const totalMessages = await Message.countDocuments();
-      const totalPages = Math.ceil(totalMessages / limit);
-
-      return res.status(200).json({
-        messages,
-        totalPages,
-        currentPage: page,
-        totalMessages,
-        approximate: false,
-      });
-    } catch (error) {
-      console.error("Error fetching all messages:", error);
-      return res
-        .status(500)
-        .json({ message: "Failed to retrieve all messages" });
     }
   }
 }

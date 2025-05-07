@@ -45,6 +45,29 @@ class MessageRepository {
     };
   }
 
+  async getAllMessages(page, limit) {
+    // Get all messages without filtering by recipient
+    const messages = await Message.find({})
+      .select("_id sender encryptedContent iv recipientKeys recipients timestamp isUnread")
+      .sort({ timestamp: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean()
+      .exec();
+    
+    // Get total message count
+    const totalMessages = await Message.countDocuments();
+    const totalPages = Math.ceil(totalMessages / limit);
+    
+    return {
+      messages,
+      totalPages,
+      currentPage: page,
+      totalMessages,
+      approximate: false
+    };
+  }
+
   async markMessageAsRead(messageId, username) {
     return Message.updateOne(
       {
