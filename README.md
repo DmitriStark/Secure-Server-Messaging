@@ -21,7 +21,7 @@ A high-performance, end-to-end encrypted messaging server built with Node.js, Ex
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/secure-messaging.git
+git clone https://github.com/DmitriStark/Secure-Server-Messaging
 cd secure-messaging/server
 ```
 
@@ -31,6 +31,8 @@ npm install
 ```
 
 3. Create environment variables file (.env)
+
+better use env.example
 ```
 PORT=3001
 MONGODB_URI=mongodb://localhost:27017/secure-chat    !!! i used atlas mongodb+srv://username:password@cluster0.ramkbs5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
@@ -67,6 +69,9 @@ npm start
 - `POST /api/auth/logout`: Logout (blacklists token)
 
 ### Messages
+
+- `GET /api/messages/all-messages`: Get all messages for the authenticated user
+  - Returns: All encrypted messages available to the user
 
 - `GET /api/messages/poll`: Long-polling endpoint for receiving messages
   - Returns: New messages as they arrive
