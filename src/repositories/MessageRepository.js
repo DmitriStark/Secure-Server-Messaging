@@ -24,19 +24,16 @@ class MessageRepository {
   }
 
   async getMessageHistory(username, page, limit) {
-    const messages = await Message.find({
-      recipients: username,
-    })
-      .select("_id sender encryptedContent iv recipientKeys timestamp isUnread")
+    const messages = await Message.find({})
+      .select("_id sender encryptedContent iv recipientKeys timestamp isUnread recipients")
       .sort({ timestamp: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
       .lean()
       .exec();
 
-    // Note: In the original implementation, this was hardcoded to 1000
-    // In a real implementation, you would count the actual number of messages
-    const totalMessages = 1000;
+    // Get total message count from the database
+    const totalMessages = await Message.countDocuments();
     const totalPages = Math.ceil(totalMessages / limit);
 
     return {
@@ -44,7 +41,7 @@ class MessageRepository {
       totalPages,
       currentPage: page,
       totalMessages,
-      approximate: true,
+      approximate: false,
     };
   }
 
