@@ -44,7 +44,7 @@ NODE_ENV=development
 
 4. Run the server
 ```bash
-npm start
+npm run start
 ```
 
 ## API Endpoints
